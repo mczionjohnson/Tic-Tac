@@ -1,70 +1,59 @@
-# Getting Started with Create React App
+# stage 1
+child: square
+component so we extend react component
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+parent: board
+component so we extend react component
 
-## Available Scripts
+# stage two
+child: square
+class
 
-In the project directory, you can run:
+parent: Board 
+component so we extend react component
 
-### `npm start`
+# stage 3 
+2nd child: square
+class
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1st child: board
+component so we extend react component
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+parent: Game 
+component so we extend react component
 
-### `npm test`
+# The plan
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+When a Square is clicked, the onClick function provided by the Board is called. Here’s a review of how this is achieved:
 
-### `npm run build`
+The onClick prop on the built-in DOM <button> component tells React to set up a click event listener.
+When the button is clicked, React will call the onClick event handler that is defined in Square’s render() method.
+This event handler calls this.props.onClick(). The Square’s onClick prop was specified by the Board.
+Since the Board passed onClick={() => this.handleClick(i)} to Square, the Square calls the Board’s handleClick(i) when clicked.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+We set an array of 9 element and made it null by default
 
-### `npm run eject`
+Note how in handleClick, we call .slice() to create a copy of the squares array to modify instead of modifying the existing array. We made it immutable so we can build history and undo our click by going back a step in the memory saved.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+we made X default so when taking turns with 'X' and 'O'
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Each time a player moves, xIsNext (a boolean) will be flipped to determine which player goes next and the game’s state will be saved
 
-## Learn More
+Copy this helper function and paste it at the end of the file:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Given an array of 9 squares, this function will check for a winner and return 'X', 'O', or null as appropriate.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+We will call calculateWinner(squares) in the Board’s render function to check if a player has won. If a player has won, we can display text such as “Winner: X” or “Winner: O”. We’ll replace the status declaration in Board’s render function with this code:
 
-### Code Splitting
+# Creating History
+# stage three
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+We can now change the Board’s handleClick function to return early by ignoring a click if someone has won the game or if a Square is already filled: by using an if statement in the handleClick
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Delete the constructor in Board.
+Replace this.state.squares[i] with this.props.squares[i] in Board’s renderSquare.
+Replace this.handleClick(i) with this.props.onClick(i) in Board’s renderSquare.
